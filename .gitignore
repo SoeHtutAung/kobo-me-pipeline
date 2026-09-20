@@ -1,2 +1,6 @@
 data/
 .env
+.Renviron
+.Rproj.user
+.Rhistory
+.RData
