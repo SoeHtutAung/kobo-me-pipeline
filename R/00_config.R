@@ -1,6 +1,6 @@
 ######################
-# Topic: Demo project
-# Purpose: API integrations and report generation
+# Topic: KOBO API integration and automation
+# Purpose: Project set up
 # Author: One Tech Agency
 ###################### 
 
@@ -25,11 +25,13 @@ kobo_token    <- Sys.getenv("KOBO_API_TOKEN")
 kobo_base_url <- Sys.getenv("KOBO_BASE_URL")
 kobo_asset    <- Sys.getenv("KOBO_ASSET_UID")
 
-# validation check for missing credentials
-if (kobo_token == "" || kobo_base_url == "") {
-  stop("CRITICAL ERROR: KoboToolbox API credentials are missing from .env")
-}
-
-message("Configuration successfully loaded.")
+# check connection
+request(kobo_base_url) %>%
+  req_url_path_append("assets", paste0(kobo_asset, ".json")) %>%
+  req_headers(
+    Authorization = paste("Token", kobo_token),
+    Accept = "application/json"
+  ) %>%
+  req_perform()
 
 
