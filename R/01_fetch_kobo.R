@@ -98,5 +98,5 @@ df_clean <- df_raw %>%
     sameas_start_dt = End_date_same_as_start_date
   )
 
-# save intermediate RDS for Day 3 (Data Validation)
+# save intermediate RDS before data validation
 saveRDS(df_clean, "data/raw/kobo_latest_tbl.rds")

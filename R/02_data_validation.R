@@ -93,3 +93,24 @@ df_flagged_rows <- df_clean %>%
 
 # export CSV log of flagged records for field enumerator follow-up
 write_csv(df_flagged_rows, sprintf("data/processed/flagged_data_%s.csv", format(Sys.Date(), "%Y%m%d")))
+
+# save dataset with a column for validation result
+df_validated <- df_clean %>%
+    
+  # create validation flags (TRUE = issue found)
+    mutate(
+      flag_duplication    = duplicated(user_id) | duplicated(user_id, fromLast = TRUE),
+      flag_missing_value  = is.na(address) | trimws(address) == "" | address == 'NULL', #NULL is important for kobo
+      flag_invalid_date   = !is.na(start_dt) & 
+      # convert submission time column to POSIXct from list
+      ymd(start_dt, tz = "UTC", quiet = TRUE) > past_boundary,
+    
+    # Consolidated row status
+    has_validation_issue = flag_duplication | flag_missing_value | flag_invalid_date
+    ) %>%
+  
+    # select columns to include in the csv file
+    select (-flag_duplication, -flag_missing_value, -flag_invalid_date)
+
+# save intermediate RDS before data analysis
+saveRDS(df_validated, "data/processed/kobo_validated_tbl.rds")
