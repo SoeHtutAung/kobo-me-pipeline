@@ -22,6 +22,7 @@ if (!file.exists("data/processed/kobo_validated_tbl.rds")) {
 
 df_validated <- readRDS("data/processed/kobo_validated_tbl.rds")
 
+# 1. Preparation and calculation of indicators ---- 
 # filer rows without validation issue for indicator calculations
 df_analysis <- df_validated %>%
   filter(has_validation_issue == FALSE)
@@ -68,6 +69,7 @@ data_quality_summary <- tibble(
   )
 )
 
+# 2. Saving calculation outputs for further analysis ----
 # create directory to save indicators
 dir.create("data/processed/indicators", showWarnings = FALSE, recursive = TRUE)
 

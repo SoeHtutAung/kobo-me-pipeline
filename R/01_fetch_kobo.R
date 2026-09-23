@@ -16,6 +16,7 @@ library(dplyr)
 library(purrr)
 library(tidyr)
 
+# 1. Fetching JSON from Kobo API -----
 # creating a function to fetch raw data from KoboToolbox API v2 with Pagination
 fetch_kobo_submissions <- function(asset_uid, token, base_url) {
   
@@ -76,6 +77,7 @@ raw_json_path <- file.path("data", "raw", paste0("kobo_raw_", timestamp, ".json"
 write_json(raw_payload, raw_json_path, auto_unbox = TRUE, pretty = TRUE)
 message(paste("Raw JSON payload saved to:", raw_json_path))
 
+# 2. Tidying up JSON to data frame ----
 # flatten JSON list to a tidy tibble
 df_raw <- fromJSON(toJSON(raw_payload), flatten = TRUE)
 

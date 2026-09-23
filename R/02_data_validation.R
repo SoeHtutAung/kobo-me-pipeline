@@ -23,6 +23,7 @@ if (!file.exists("data/raw/kobo_latest_tbl.rds")) {
 
 df_clean <- readRDS("data/raw/kobo_latest_tbl.rds")
 
+# 1. Creat validation agent using piontblank and interrogate ----
 # set up boundary in the past in UTC (e.g., start date before 0:00 10 SEP 2026 in MMT +6:30 UTC)
 past_boundary <- ymd_hms("2026-09-10 0:00:00", tz = "Asia/Yangon") %>% with_tz("UTC") 
 
@@ -58,13 +59,14 @@ agent <- create_agent(
   # interrogate data
   interrogate()
 
-# save HTML report for documentation 
+# 2. Save HTML report for documentation ----
 ## create path for validation report
 html_report_path <- file.path("data", "processed", sprintf("validation_report_%s.html", format(Sys.Date(), "%Y%m%d")))
 ## export report
 export_report(agent, filename = html_report_path)
 # message(paste("HTML Validation report saved to:", html_report_path))
 
+# 3. Create validated dataset by including a column with data validation result ----
 # row-level screening and filtering forms with validation issue
 df_flagged_rows <- df_clean %>%
     # unlist the df

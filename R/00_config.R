@@ -1,6 +1,6 @@
 ######################
 # Topic: KOBO API integration and automation
-# Purpose: Project set up
+# Purpose: Project and secrets set up, and test server connection
 # Author: One Tech Agency
 ###################### 
 
