@@ -5,7 +5,7 @@
 ###################### 
 
 # install missing packages and dependencies as necessary
-required_pkgs <- c("purrr", "httr2", "jsonlite", "dplyr", "tidyr")
+required_pkgs <- c("purrr", "httr2", "jsonlite", "dplyr", "tidyr", "stringr")
 new_pkgs <- required_pkgs[!(required_pkgs %in% installed.packages()[, "Package"])]
 if (length(new_pkgs)) install.packages(new_pkgs)
 
@@ -15,6 +15,7 @@ library(jsonlite)
 library(dplyr)
 library(purrr)
 library(tidyr)
+library(stringr)
 
 # 1. Fetching JSON from Kobo API -----
 # creating a function to fetch raw data from KoboToolbox API v2 with Pagination
@@ -88,7 +89,7 @@ df_clean <- df_raw %>%
   rename_with(~ gsub("/", ".", .x)) %>%
   
   # remove specific columns
-  select(-formhub.uuid, -meta__version__, -meta.instanceID, -meta_xform_id_string,
+  select(-formhub.uuid, -meta.instanceID, -meta_xform_id_string,
          -meta.rootUuid, -meta_attachments, -meta_status, -meta_geolocation) %>%
   
   # rename specific columns
@@ -97,7 +98,35 @@ df_clean <- df_raw %>%
     user_id = meta_uuid,
     address = location_add,
     submission_time = meta_submission_time,
-    sameas_start_dt = End_date_same_as_start_date
+    sameas_start_dt = End_date_same_as_start_date) %>%
+  
+  # there was an error during form development that responses were not properly coded in earlier versions
+  # follow script is to manipulate that data
+  ## convert activity list-column to character
+  mutate(
+    activity = map_chr(
+      activity,
+      ~ paste(unlist(.x), collapse = " ")
+    )
+  ) %>%
+  
+  ## recode activity for the two old form versions
+  mutate(
+    activity = if_else(
+      meta__version__ %in% c(
+        "v2CCG9MzxrKktdz8bW63PE",
+        "vksRw3i9xevqUQz2bGV4WV"
+      ),
+      activity %>%
+        str_replace_all(
+          c(
+            "option_1" = "corpse_retrieval",
+            "option_2" = "debris_removal_major",
+            "debris_removal_comprehensive" = "debris_removal_com"
+          )
+        ),
+      activity
+    )
   )
 
 # save intermediate RDS before data validation
