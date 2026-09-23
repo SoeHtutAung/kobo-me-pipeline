@@ -21,9 +21,12 @@ if (file.exists(".env")) {
 }
 
 # retrieve credentials from environment
+## credentials for Kobo
 kobo_token    <- Sys.getenv("KOBO_API_TOKEN")
 kobo_base_url <- Sys.getenv("KOBO_BASE_URL")
 kobo_asset    <- Sys.getenv("KOBO_ASSET_UID")
+## credentials for Gemini
+gemini_key <- Sys.getenv("GEMINI_API_KEY")
 
 # check connection
 request(kobo_base_url) %>%
