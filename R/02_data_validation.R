@@ -78,7 +78,7 @@ df_flagged_rows <- df_clean %>%
   # create validation flags (TRUE = issue found)
     mutate(
       flag_duplication    = duplicated(user_id) | duplicated(user_id, fromLast = TRUE),
-      flag_missing_value  = is.na(address) | trimws(address) == "" | address == 'NULL', #NULL is important for kobo
+      flag_missing_value  = address == 'NULL' & location_map == 'NULL', # no address recorded
       flag_invalid_date   = !is.na(start_dt) & 
       # convert submission time column to POSIXct from list
       ymd(start_dt, tz = "UTC", quiet = TRUE) > past_boundary,
@@ -102,7 +102,7 @@ df_validated <- df_clean %>%
   # create validation flags (TRUE = issue found)
     mutate(
       flag_duplication    = duplicated(user_id) | duplicated(user_id, fromLast = TRUE),
-      flag_missing_value  = is.na(address) | trimws(address) == "" | address == 'NULL', #NULL is important for kobo
+      flag_missing_value  = address == 'NULL' & location_map == 'NULL', # no address recorded
       flag_invalid_date   = !is.na(start_dt) & 
       # convert submission time column to POSIXct from list
       ymd(start_dt, tz = "UTC", quiet = TRUE) > past_boundary,
