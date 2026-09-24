@@ -81,6 +81,12 @@ types_and_damage <- df_analysis %>%
     .groups = "drop"
   )
 
+# tables for power BI: create fact and dimension tables in csv format
+# fact table: validated and cleaned data set
+df_export <- df_analysis %>%
+  ## convert list to character to prevent missing in exporting to csv
+  mutate(across(where(is.list), ~ map_chr(.x, ~ paste(unlist(.x), collapse = ", "))))
+
 # 2. Saving calculation outputs for further analysis ----
 # create directory to save indicators
 dir.create("data/processed/indicators", showWarnings = FALSE, recursive = TRUE)
@@ -90,6 +96,17 @@ write_csv(jobs_per_day, "data/processed/indicators/jobs_per_day.csv")
 write_csv(building_types, "data/processed/indicators/building_types.csv")
 write_csv(data_quality_summary, "data/processed/indicators/data_quality_summary.csv")
 write_csv(types_and_damage, "data/processed/indicators/types_and_damage.csv")
+
+# export fact and dimension tables for power BI
+# create directory for power bi
+dir.create("data/processed/powerbi", showWarnings = FALSE, recursive = TRUE)
+# fact table
+write_csv(df_export, "data/processed/powerbi/dataset.csv")
+# dimension table: they are predefined in the Kobocollect form. But form revision may cause addition of new variables, thus extract from dataset to be safe 
+## building types
+df_export %>% distinct(df_export$type) %>% write_csv("data/processed/powerbi/buildingtypes.csv")
+## level of damage
+df_export %>% distinct(df_export$lvl_damage) %>% write_csv("data/processed/powerbi/damagelevels.csv")
 
 # save consolidated RDS for Power BI and report generation
 indicator_bundle <- list(
