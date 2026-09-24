@@ -80,14 +80,6 @@ types_and_damage <- df_analysis %>%
     percent = round((n() / nrow(df_analysis)) * 100, 2),
     .groups = "drop"
   )
-
-# tables for power BI: create fact and dimension tables in csv format
-# fact table: validated and cleaned data set
-df_export <- df_analysis %>%
-  ## convert list to character to prevent missing in exporting to csv
-  mutate(across(where(is.list), ~ map_chr(.x, ~ paste(unlist(.x), collapse = ", "))))
-
-# 2. Saving calculation outputs for further analysis ----
 # create directory to save indicators
 dir.create("data/processed/indicators", showWarnings = FALSE, recursive = TRUE)
 
@@ -96,6 +88,26 @@ write_csv(jobs_per_day, "data/processed/indicators/jobs_per_day.csv")
 write_csv(building_types, "data/processed/indicators/building_types.csv")
 write_csv(data_quality_summary, "data/processed/indicators/data_quality_summary.csv")
 write_csv(types_and_damage, "data/processed/indicators/types_and_damage.csv")
+
+# save consolidated RDS for Power BI and report generation
+indicator_bundle <- list(
+  daily_reach = jobs_per_day,
+  building_types = building_types,
+  summary = data_quality_summary,
+  types_damage = types_and_damage
+)
+# save rds
+saveRDS(indicator_bundle, "data/processed/indicators_summary.rds")
+
+# 2. tables for power BI: create fact and dimension tables in csv format ----
+
+# create expected columns as kobo export may exclude columns without response and this may cause error when updating power BI
+
+
+# fact table: validated and cleaned data set
+df_export <- df_analysis %>%
+  ## convert list to character to prevent missing in exporting to csv
+  mutate(across(where(is.list), ~ map_chr(.x, ~ paste(unlist(.x), collapse = ", "))))
 
 # export fact and dimension tables for power BI
 # create directory for power bi
@@ -108,13 +120,4 @@ df_export %>% distinct(df_export$type) %>% write_csv("data/processed/powerbi/bui
 ## level of damage
 df_export %>% distinct(df_export$lvl_damage) %>% write_csv("data/processed/powerbi/damagelevels.csv")
 
-# save consolidated RDS for Power BI and report generation
-indicator_bundle <- list(
-  daily_reach = jobs_per_day,
-  building_types = building_types,
-  summary = data_quality_summary,
-  types_damage = types_and_damage
-)
 
-# save rds
-saveRDS(indicator_bundle, "data/processed/indicators_summary.rds")
