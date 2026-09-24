@@ -111,7 +111,11 @@ df_export <- df_analysis %>%
 
 # export fact and dimension tables for power BI
 # create directory for power bi
+## for datasets
 dir.create("data/processed/powerbi", showWarnings = FALSE, recursive = TRUE)
+## for pbix file and screenshots
+# dir.create("reports", showWarnings = FALSE, recursive = TRUE)
+
 # fact table
 write_csv(df_export, "data/processed/powerbi/dataset.csv")
 # dimension table: they are predefined in the Kobocollect form. But form revision may cause addition of new variables, thus extract from dataset to be safe 
