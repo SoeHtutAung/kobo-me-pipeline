@@ -31,13 +31,22 @@ tryCatch({
   stop("FATAL ERROR in 02_data_validation.R: ", e$message)
 })
 
-# step 4: Sample indicator calculations
+# step 4: Sample indicator calculations and preparation datasets for powerBI
 message("\n--- Step 4: Calculating indicators ---")
 tryCatch({
   source("R/03_indicator_calculations.R")
   message("SUCCESS: Indicator aggregation complete.")
 }, error = function(e) {
   stop("FATAL ERROR in 03_indicator_calculations.R: ", e$message)
+})
+
+# step 5: LLM Integration for qualitative M&E analysis
+message("\n--- Step 5: LLM integration ---")
+tryCatch({
+  source("R/04_llm_analysis.R")
+  message("SUCCESS: LLM aggregation complete.")
+}, error = function(e) {
+  stop("FATAL ERROR in 04_llm_analysis.R: ", e$message)
 })
 
 message("\n==================================================")
