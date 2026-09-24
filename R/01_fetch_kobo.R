@@ -110,12 +110,13 @@ df_clean <- df_raw %>%
     )
   ) %>%
   
-  ## recode activity for the two old form versions
+  ## recode activity for the three old form versions
   mutate(
     activity = if_else(
       meta__version__ %in% c(
         "v2CCG9MzxrKktdz8bW63PE",
-        "vksRw3i9xevqUQz2bGV4WV"
+        "vksRw3i9xevqUQz2bGV4WV",
+        "vpsRT5SD74gydrqH7bMMud"
       ),
       activity %>%
         str_replace_all(
