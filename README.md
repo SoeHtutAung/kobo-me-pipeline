@@ -31,7 +31,6 @@ Additional analysis layer, intended to support analytical interpretation and rep
 | `R/04_llm_analysis.R` | 
 | :---- |
 • Prepares building damage data by building type, damage level, number of buildings, percentage of buildings <br/> • Passes the CSV to Gemini with a structured system and user prompt, using API key from Google AI studio. <br/> Produces a concise narrative summary and three key findings in CSV format|
-Processed insight report is exported to feed into Power BI. 
 Sample system prompt: <br/> _"You are an experienced Monitoring and Evaluation (M&E) expert working in the public health and humanitarian sector. <br/> You will be provided with a CSV table showing building types, damage levels, number of buildings, and percentages. <br/> Return the result as valid JSON with exactly two fields: <br/> 1. 'summary': A concise 1 paragraph narrative highlighting overall pattern of building damage, Compare damage levels across building type, notable findings. <br/> 2. 'findings': A JSON array of 3 bullet-point highlights extracted from the data, including numbers and percentages as applicable."_
 
 ## 5. Outputs
