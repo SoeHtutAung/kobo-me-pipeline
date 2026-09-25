@@ -34,10 +34,10 @@ tryCatch({
 # step 4: Sample indicator calculations and preparation datasets for powerBI
 message("\n--- Step 4: Calculating indicators ---")
 tryCatch({
-  source("R/03_indicator_calculations.R")
+  source("R/03_analysis.R")
   message("SUCCESS: Indicator aggregation complete.")
 }, error = function(e) {
-  stop("FATAL ERROR in 03_indicator_calculations.R: ", e$message)
+  stop("FATAL ERROR in 03_analysis.R: ", e$message)
 })
 
 # step 5: LLM Integration for qualitative M&E analysis
